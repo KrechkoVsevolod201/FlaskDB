@@ -37,7 +37,7 @@
       <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
         <a class="me-3 py-2 text-dark text-decoration-none" href="/home">Home</a>
         <a class="me-3 py-2 text-dark text-decoration-none" href="/about">About</a>
-        <a class="me-3 py-2 text-dark text-decoration-none" href="/sign">New post</a>
+        <a class="btn btn-warning" href="/sign">New post</a>
       </nav>
     </div>
 </body>
@@ -46,8 +46,9 @@
 <main class="form-signin">
     <div class="container mt-5">
         <form method="post">
-            <input type="text" name="username" class="form-control" id="username" placeholder="Имя пользователя"><br>
-            <input type="text" name="comment" class="form-control" id="comment" placeholder="Комментарий"><br>
+            <input type="text" name="title" class="form-control" id="title" placeholder="Название пасты"><br>
+            <textarea name="intro" id="intro" class="form-control" placeholder="Интро"></textarea><br>
+            <textarea name="text" id="text" class="form-control" placeholder="Текст пасты"></textarea><br>
             <input type="submit" class="btn btn-success" value="Оставить комментарй">
         </form>
     </div>

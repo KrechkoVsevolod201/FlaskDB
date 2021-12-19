@@ -1,21 +1,26 @@
 from flask import Flask, render_template, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 import sqlite3
+from datetime import datetime
+
 SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///booker.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///book_pasta.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 
-class Account(db.Model):
+class Pasta(db.Model):
+    current_date = datetime.now()
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(100), nullable=False)
-    comment = db.Column(db.String(1000), nullable=False)
+    title = db.Column(db.String(100), nullable=False)
+    intro = db.Column(db.String(300), nullable=False)
+    text = db.Column(db.Text, nullable=False)
+    date = db.Column(db.DateTime, default=current_date)
 
     def __repr__(self):
-        return 'Account %r' % self.id
+        return '<Pasta %r>' % self.id
 
 
 @app.route('/')
@@ -25,7 +30,8 @@ def null_page():
 
 @app.route('/home')
 def home():
-    return render_template("home.html")
+    articles = Pasta.query.order_by(Pasta.date.desc()).all()
+    return render_template("home.html", articles=articles)
 
 
 @app.route('/about')
@@ -34,19 +40,20 @@ def about():
 
 
 @app.route('/sign', methods=['POST', 'GET'])
-def create_account():
+def create_pasta():
     if request.method == "POST":
-        username = request.form['username']
-        comment = request.form['comment']
+        title = request.form['title']
+        intro = request.form['intro']
+        text = request.form['text']
 
-        account = Account(username=username, comment=comment)
+        pasta = Pasta(title=title, intro=intro, text=text)
 
         try:
-            db.session.add(account)
+            db.session.add(pasta)
             db.session.commit()
             return redirect('/about')
         except:
-            return "При создании пользователя произошла ошибка"
+            return "При создании пасты произошла ошибка"
     else:
         return render_template("base-create-post.html")
 
