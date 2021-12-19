@@ -34,6 +34,42 @@ def home():
     return render_template("home.html", articles=articles)
 
 
+@app.route('/posts/<int:id>')
+def pasta_detail(id):
+    article = Pasta.query.get(id)
+    return render_template("post-detail.html", article=article)
+
+
+@app.route('/posts/<int:id>/del')
+def pasta_delete(id):
+    article = Pasta.query.get_or_404(id)
+
+    try:
+        db.session.delete(article)
+        db.session.commit()
+        return redirect('/home')
+
+    except:
+        return "При удалении пасты произошла ошибка"
+
+
+@app.route('/posts/<int:id>/update', methods=['POST', 'GET'])
+def pasta_update(id):
+    pasta = Pasta.query.get(id)
+    if request.method == "POST":
+        pasta.title = request.form['title']
+        pasta.intro = request.form['intro']
+        pasta.text = request.form['text']
+
+        try:
+            db.session.commit()
+            return redirect('/about')
+        except:
+            return "При редактировании пасты произошла ошибка"
+    else:
+        return render_template("post_update.html", pasta=pasta)
+
+
 @app.route('/about')
 def about():
     return render_template("about.html")
@@ -55,7 +91,7 @@ def create_pasta():
         except:
             return "При создании пасты произошла ошибка"
     else:
-        return render_template("base-create-post.html")
+        return render_template("create-post.html")
 
 
 '''
