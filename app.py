@@ -36,16 +36,16 @@ def home():
 
 @app.route('/posts/<int:id>')
 def pasta_detail(id):
-    article = Pasta.query.get(id)
-    return render_template("post-detail.html", article=article)
+    pasta = Pasta.query.get(id)
+    return render_template("post-detail.html", pasta=pasta)
 
 
 @app.route('/posts/<int:id>/del')
 def pasta_delete(id):
-    article = Pasta.query.get_or_404(id)
+    pasta = Pasta.query.get_or_404(id)
 
     try:
-        db.session.delete(article)
+        db.session.delete(pasta)
         db.session.commit()
         return redirect('/home')
 
@@ -63,11 +63,11 @@ def pasta_update(id):
 
         try:
             db.session.commit()
-            return redirect('/about')
+            return redirect('/home')
         except:
             return "При редактировании пасты произошла ошибка"
     else:
-        return render_template("post_update.html", pasta=pasta)
+        return render_template("post-update.html", pasta=pasta)
 
 
 @app.route('/about')
@@ -87,7 +87,7 @@ def create_pasta():
         try:
             db.session.add(pasta)
             db.session.commit()
-            return redirect('/about')
+            return redirect('/home')
         except:
             return "При создании пасты произошла ошибка"
     else:
