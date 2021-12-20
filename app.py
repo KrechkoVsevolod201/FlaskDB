@@ -23,6 +23,7 @@ class Pasta(db.Model):
         return '<Pasta %r>' % self.id
 
 
+'''
 class UserComment(db.Model):
     user_id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), nullable=False)
@@ -31,6 +32,8 @@ class UserComment(db.Model):
 
     def __repr__(self):
         return '<UserComment %r>' % self.user_id
+        
+'''
 
 
 @app.route('/')
@@ -80,6 +83,7 @@ def pasta_update(id):
         return render_template("post-update.html", pasta=pasta)
 
 
+'''
 @app.route('/posts/<int:id>/create_comment', methods=['POST', 'GET'])
 def create_comment(id):
     pasta = Pasta.query.get(id)
@@ -87,6 +91,7 @@ def create_comment(id):
         username = request.form['username']
         comment = request.form['comment']
         pasta_id = Pasta.query.get(id)
+
         user_comment = UserComment(username=username, comment=comment, pasta_id=pasta_id)
 
         try:
@@ -97,6 +102,7 @@ def create_comment(id):
             return "При создании комментария произошла ошибка"
     else:
         return render_template("create-comment.html", pasta=pasta)
+        '''
 
 
 @app.route('/about')
