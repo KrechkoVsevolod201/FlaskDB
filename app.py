@@ -20,11 +20,13 @@ class Pasta(db.Model):
     text = db.Column(db.Text, nullable=False)
     date = db.Column(db.DateTime, default=current_date)
 
-    def __init__(self, title, intro, text, tag):
+    def __init__(self, title, intro, text, tags):
         self.title = title.strip()
         self.intro = intro.strip()
         self.text = text.strip()
-        self.tag = tag.strip()
+        self.tags = [
+            Tag(text=tag.strip()) for tag in tags.split(',')
+        ]
 
 
 class Tag(db.Model):
@@ -33,7 +35,7 @@ class Tag(db.Model):
     text = db.Column(db.String(32), nullable=False)
 
     pasta_id = db.Column(db.Integer, db.ForeignKey('pasta.id'), nullable=False)
-    pasta = db.relationship('Pasta', backref=db.backref('tags', lazy=True))
+    pasta = db.relationship('Pasta', backref=db.backref('tags', lazy=True, cascade="all,delete"))
 
 
 class Author(db.Model):
@@ -51,7 +53,6 @@ class UserComment(db.Model):
     username = db.Column(db.String(100), nullable=False)
     comment = db.Column(db.String(1000), nullable=False)
     pasta_id = db.Column(db.Integer, db.ForeignKey(Pasta.id), nullable=False)
-
     def __repr__(self):
         return '<UserComment %r>' % self.user_id
 '''
@@ -77,7 +78,6 @@ def pasta_detail(id):
 @app.route('/posts/<int:id>/del')
 def pasta_delete(id):
     pasta = Pasta.query.get_or_404(id)
-
     try:
         db.session.delete(pasta)
         db.session.commit()
@@ -113,7 +113,6 @@ def create_comment(id):
         comment = request.form['comment']
         pasta_id = Pasta.query.get(id)
         user_comment = UserComment(username=username, comment=comment, pasta_id=pasta_id)
-
         try:
             db.session.add(user_comment)
             db.session.commit()
@@ -141,7 +140,7 @@ def create_pasta():
         #pasta = Pasta(title=title, intro=intro, text=text, teg=teg)
 
         try:
-            db.session.add(Pasta(title=title, intro=intro, text=text, tag=tag))
+            db.session.add(Pasta(title, intro, text, tag))
             db.session.commit()
             return redirect('/home')
         except:

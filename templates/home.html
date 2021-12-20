@@ -8,12 +8,15 @@
 <div class="container mt-5">
     <h1>Все пасты</h1>
 
-    {% for el in articles %}
+    {% for articles in articles %}
     <div class="alert alert-info">
-        <h2>{{ el.title }}</h2>
-        <p>{{ el.intro }}</p>
-        <p><b>Дата: {{ el.date.date() }}</b></p>
-        <a href="/posts/{{ el.id }}" class="btn btn-warning">Детальнее</a>
+        <h2>{{ articles.title }}</h2>
+        <p>{{ articles.intro }}</p>
+        {% for tag in articles.tags %}
+        #{{ tag.text }}
+    {% endfor %}
+        <p><b>Дата: {{ articles.date.date() }}</b></p>
+        <a href="/posts/{{ articles.id }}" class="btn btn-warning">Детальнее</a>
     </div>
     {% endfor %}
 </div>
