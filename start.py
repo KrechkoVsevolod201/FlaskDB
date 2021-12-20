@@ -11,10 +11,13 @@ class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(1024), nullable=False)
 
-    def __init__(self, text, tags):
+    def __init__(self, text, tags, author):
         self.text = text.strip()
         self.tags = [
             Tag(text=tag.strip()) for tag in tags.split(',')
+        ]
+        self.author = [
+            Author(text=author.strip()) for author in author.split(',')
         ]
 
 
@@ -26,7 +29,15 @@ class Tag(db.Model):
     message = db.relationship('Message', backref=db.backref('tags', lazy=True))
 
 
-#db.create_all()
+class Author(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.String(32), nullable=False)
+
+    message_id = db.Column(db.Integer, db.ForeignKey('message.id'), nullable=False)
+    message = db.relationship('Message', backref=db.backref('author', lazy=True))
+
+
+# db.create_all()
 
 
 @app.route('/', methods=['GET'])
@@ -43,12 +54,14 @@ def main():
 def add_message():
     text = request.form['text']
     tag = request.form['tag']
+    author = request.form['author']
 
-    db.session.add(Message(text, tag))
+    db.session.add(Message(text, tag, author))
     db.session.commit()
 
     return redirect(url_for('main'))
 
 
 if __name__ == "__main__":
+    db.create_all()
     app.run(debug=True)

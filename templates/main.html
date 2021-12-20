@@ -10,6 +10,7 @@
 <form method="post" action="/add_message">
     <input type="text" name="text">
     <input type="text" name="tag">
+    <input type="text" name="author">
     <button type="submit">Add message</button>
 </form>
 
@@ -18,6 +19,9 @@
 <div>{{ message.text }}&nbsp;
     {% for tag in message.tags %}
         <b>#{{ tag.text }}</b>
+    {% endfor %}
+    {% for author in message.author %}
+        {{ author.text }}
     {% endfor %}
 </div>
 {% endfor %}

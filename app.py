@@ -12,6 +12,7 @@ db = SQLAlchemy(app)
 
 
 class Pasta(db.Model):
+    __tablename__ = 'pasta'
     current_date = datetime.now()
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
@@ -19,8 +20,29 @@ class Pasta(db.Model):
     text = db.Column(db.Text, nullable=False)
     date = db.Column(db.DateTime, default=current_date)
 
-    def __repr__(self):
-        return '<Pasta %r>' % self.id
+    def __init__(self, title, intro, text, tag):
+        self.title = title.strip()
+        self.intro = intro.strip()
+        self.text = text.strip()
+        self.tag = tag.strip()
+
+
+class Tag(db.Model):
+    __tablename__ = 'tag'
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.String(32), nullable=False)
+
+    pasta_id = db.Column(db.Integer, db.ForeignKey('pasta.id'), nullable=False)
+    pasta = db.relationship('Pasta', backref=db.backref('tags', lazy=True))
+
+
+class Author(db.Model):
+    __tablename__ = 'author'
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.String(32), nullable=False)
+
+    pasta_id = db.Column(db.Integer, db.ForeignKey('pasta.id'), nullable=False)
+    pasta = db.relationship('Pasta', backref=db.backref('author', lazy=True))
 
 
 '''
@@ -114,11 +136,12 @@ def create_pasta():
         title = request.form['title']
         intro = request.form['intro']
         text = request.form['text']
+        tag = request.form['tag']
 
-        pasta = Pasta(title=title, intro=intro, text=text)
+        #pasta = Pasta(title=title, intro=intro, text=text, teg=teg)
 
         try:
-            db.session.add(pasta)
+            db.session.add(Pasta(title=title, intro=intro, text=text, tag=tag))
             db.session.commit()
             return redirect('/home')
         except:
@@ -134,4 +157,5 @@ def user(name, id):
 '''
 
 if __name__ == "__main__":
+    db.create_all()
     app.run(debug=True)
