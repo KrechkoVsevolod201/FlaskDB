@@ -23,6 +23,16 @@ class Pasta(db.Model):
         return '<Pasta %r>' % self.id
 
 
+class UserComment(db.Model):
+    user_id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(100), nullable=False)
+    comment = db.Column(db.String(1000), nullable=False)
+    pasta_id = db.Column(db.Integer, db.ForeignKey(Pasta.id), nullable=False)
+
+    def __repr__(self):
+        return '<UserComment %r>' % self.user_id
+
+
 @app.route('/')
 def null_page():
     return render_template("about.html")
@@ -70,12 +80,31 @@ def pasta_update(id):
         return render_template("post-update.html", pasta=pasta)
 
 
+@app.route('/posts/<int:id>/create_comment', methods=['POST', 'GET'])
+def create_comment(id):
+    pasta = Pasta.query.get(id)
+    if request.method == "POST":
+        username = request.form['username']
+        comment = request.form['comment']
+        pasta_id = Pasta.query.get(id)
+        user_comment = UserComment(username=username, comment=comment, pasta_id=pasta_id)
+
+        try:
+            db.session.add(user_comment)
+            db.session.commit()
+            return redirect('/home')
+        except:
+            return "При создании комментария произошла ошибка"
+    else:
+        return render_template("create-comment.html", pasta=pasta)
+
+
 @app.route('/about')
 def about():
     return render_template("about.html")
 
 
-@app.route('/sign', methods=['POST', 'GET'])
+@app.route('/create_pasta', methods=['POST', 'GET'])
 def create_pasta():
     if request.method == "POST":
         title = request.form['title']

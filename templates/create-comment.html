@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Коментiрии
+{{ pasta.title }}
+{% endblock %}
+
+{% block body %}
+создаём комментарий
+
+    <div class="container mt-5">
+        <h1>{{ pasta.title }}</h1>
+
+        <div class="alert alert-info">
+            <p>{{ pasta.text }}</p>
+            <p><b>Дата: {{ pasta.date.date() }}</b></p>
+        </div>
+    </div>
+
+<main class="form-signin">
+    <div class="container mt-5">
+        <form method="post">
+            <input type="text" name="username" class="form-control" id="username" placeholder="Имя пользователя"><br>
+            <textarea name="comment" id="comment" class="form-control" placeholder="Текст комментария"></textarea><br>
+            <input type="submit" class="btn btn-success" value="Оставить комментарий">
+        </form>
+    </div>
+</main>
+
+<br></br>
+{% endblock %}
