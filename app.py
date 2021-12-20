@@ -19,21 +19,29 @@ class Pasta(db.Model):
     text = db.Column(db.Text, nullable=False)
     date = db.Column(db.DateTime, default=current_date)
 
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
+    category = db.relationship('Category', backref=db.backref('posts', lazy=True))
+
     def __repr__(self):
         return '<Pasta %r>' % self.id
 
 
-'''
 class UserComment(db.Model):
-    user_id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), nullable=False)
     comment = db.Column(db.String(1000), nullable=False)
-    pasta_id = db.Column(db.Integer, db.ForeignKey(Pasta.id), nullable=False)
+    pasta_id = db.Column(db.Integer, db.ForeignKey('Pasta.id'), nullable=False)
 
     def __repr__(self):
-        return '<UserComment %r>' % self.user_id
-        
-'''
+        return '<UserComment %r>' % self.id
+
+
+class Category(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+
+    def __repr__(self):
+        return '<Category %r>' % self.id
 
 
 @app.route('/')
@@ -83,7 +91,7 @@ def pasta_update(id):
         return render_template("post-update.html", pasta=pasta)
 
 
-'''
+
 @app.route('/posts/<int:id>/create_comment', methods=['POST', 'GET'])
 def create_comment(id):
     pasta = Pasta.query.get(id)
@@ -102,7 +110,6 @@ def create_comment(id):
             return "При создании комментария произошла ошибка"
     else:
         return render_template("create-comment.html", pasta=pasta)
-        '''
 
 
 @app.route('/about')
