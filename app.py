@@ -20,12 +20,15 @@ class Pasta(db.Model):
     text = db.Column(db.Text, nullable=False)
     date = db.Column(db.DateTime, default=current_date)
 
-    def __init__(self, title, intro, text, tags):
+    def __init__(self, title, intro, text, tags, authors):
         self.title = title.strip()
         self.intro = intro.strip()
         self.text = text.strip()
         self.tags = [
             Tag(text=tag.strip()) for tag in tags.split(',')
+        ]
+        self.authors = [
+            Author(text=author.strip()) for author in authors.split(',')
         ]
 
 
@@ -44,7 +47,7 @@ class Author(db.Model):
     text = db.Column(db.String(32), nullable=False)
 
     pasta_id = db.Column(db.Integer, db.ForeignKey('pasta.id'), nullable=False)
-    pasta = db.relationship('Pasta', backref=db.backref('author', lazy=True))
+    pasta = db.relationship('Pasta', backref=db.backref('authors', lazy=True, cascade="all,delete"))
 
 
 '''
@@ -73,6 +76,12 @@ def home():
 def pasta_detail(id):
     pasta = Pasta.query.get(id)
     return render_template("post-detail.html", pasta=pasta)
+
+
+@app.route('/admin/posts/<int:id>')
+def pasta_detail_admin(id):
+    pasta = Pasta.query.get(id)
+    return render_template("post-detail-admin.html", pasta=pasta)
 
 
 @app.route('/posts/<int:id>/del')
@@ -136,11 +145,12 @@ def create_pasta():
         intro = request.form['intro']
         text = request.form['text']
         tag = request.form['tag']
+        author = request.form['author']
 
         #pasta = Pasta(title=title, intro=intro, text=text, teg=teg)
 
         try:
-            db.session.add(Pasta(title, intro, text, tag))
+            db.session.add(Pasta(title, intro, text, tag, author))
             db.session.commit()
             return redirect('/home')
         except:

@@ -11,10 +11,14 @@
     {% for articles in articles %}
     <div class="alert alert-info">
         <h2>{{ articles.title }}</h2>
-        <p>{{ articles.intro }}</p>
+        <p>О чём паста: {{ articles.intro }}</p>
         {% for tag in articles.tags %}
-        #{{ tag.text }}
-    {% endfor %}
+            Теги: #{{ tag.text }}
+        {% endfor %}
+        <p>
+        {% for author in articles.authors %}
+            Автор: {{ author.text }}
+        {% endfor %}
         <p><b>Дата: {{ articles.date.date() }}</b></p>
         <a href="/posts/{{ articles.id }}" class="btn btn-warning">Детальнее</a>
     </div>
