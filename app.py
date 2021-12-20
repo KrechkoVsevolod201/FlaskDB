@@ -23,23 +23,16 @@ class Pasta(db.Model):
         return '<Pasta %r>' % self.id
 
 
-class Category(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), nullable=False)
-
-    pasta_id = db.Column(db.Integer, db.ForeignKey('pasta.id'), nullable=False)
-    category = db.relationship('Pasta', backref=db.backref('categories', lazy=True))
-
-
-
+'''
 class UserComment(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), nullable=False)
     comment = db.Column(db.String(1000), nullable=False)
-    pasta_id = db.Column(db.Integer, db.ForeignKey('Pasta.id'), nullable=False)
+    pasta_id = db.Column(db.Integer, db.ForeignKey(Pasta.id), nullable=False)
 
     def __repr__(self):
-        return '<UserComment %r>' % self.id
+        return '<UserComment %r>' % self.user_id
+'''
 
 
 @app.route('/')
@@ -89,6 +82,7 @@ def pasta_update(id):
         return render_template("post-update.html", pasta=pasta)
 
 
+'''
 @app.route('/posts/<int:id>/create_comment', methods=['POST', 'GET'])
 def create_comment(id):
     pasta = Pasta.query.get(id)
@@ -96,7 +90,6 @@ def create_comment(id):
         username = request.form['username']
         comment = request.form['comment']
         pasta_id = Pasta.query.get(id)
-
         user_comment = UserComment(username=username, comment=comment, pasta_id=pasta_id)
 
         try:
@@ -107,6 +100,7 @@ def create_comment(id):
             return "При создании комментария произошла ошибка"
     else:
         return render_template("create-comment.html", pasta=pasta)
+'''
 
 
 @app.route('/about')
@@ -120,9 +114,8 @@ def create_pasta():
         title = request.form['title']
         intro = request.form['intro']
         text = request.form['text']
-        category_id = request.form['category_id']
 
-        pasta = Pasta(title=title, intro=intro, text=text, category_id=category_id)
+        pasta = Pasta(title=title, intro=intro, text=text)
 
         try:
             db.session.add(pasta)
