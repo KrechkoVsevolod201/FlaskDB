@@ -19,11 +19,17 @@ class Pasta(db.Model):
     text = db.Column(db.Text, nullable=False)
     date = db.Column(db.DateTime, default=current_date)
 
-    category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
-    category = db.relationship('Category', backref=db.backref('posts', lazy=True))
-
     def __repr__(self):
         return '<Pasta %r>' % self.id
+
+
+class Category(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+
+    pasta_id = db.Column(db.Integer, db.ForeignKey('pasta.id'), nullable=False)
+    category = db.relationship('Pasta', backref=db.backref('categories', lazy=True))
+
 
 
 class UserComment(db.Model):
@@ -34,14 +40,6 @@ class UserComment(db.Model):
 
     def __repr__(self):
         return '<UserComment %r>' % self.id
-
-
-class Category(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), nullable=False)
-
-    def __repr__(self):
-        return '<Category %r>' % self.id
 
 
 @app.route('/')
@@ -91,7 +89,6 @@ def pasta_update(id):
         return render_template("post-update.html", pasta=pasta)
 
 
-
 @app.route('/posts/<int:id>/create_comment', methods=['POST', 'GET'])
 def create_comment(id):
     pasta = Pasta.query.get(id)
@@ -123,8 +120,9 @@ def create_pasta():
         title = request.form['title']
         intro = request.form['intro']
         text = request.form['text']
+        category_id = request.form['category_id']
 
-        pasta = Pasta(title=title, intro=intro, text=text)
+        pasta = Pasta(title=title, intro=intro, text=text, category_id=category_id)
 
         try:
             db.session.add(pasta)
