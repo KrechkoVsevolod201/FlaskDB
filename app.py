@@ -68,7 +68,12 @@ def null_page():
 
 @app.route('/home')
 def home():
-    articles = Pasta.query.order_by(Pasta.date.desc()).all()
+    q = request.args.get('q')
+
+    if q:
+        articles = Pasta.query.filter(Pasta.title.contains(q)).all()
+    else:
+        articles = Pasta.query.order_by(Pasta.date.desc()).all()
     return render_template("home.html", articles=articles)
 
 

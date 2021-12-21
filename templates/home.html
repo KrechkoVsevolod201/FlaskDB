@@ -12,8 +12,9 @@
     <div class="alert alert-info">
         <h2>{{ articles.title }}</h2>
         <p>О чём паста: {{ articles.intro }}</p>
+        Теги:
         {% for tag in articles.tags %}
-            Теги: #{{ tag.text }}
+            #{{ tag.text }}
         {% endfor %}
         <p>
         {% for author in articles.authors %}
