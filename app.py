@@ -78,6 +78,18 @@ def home():
     return render_template("home.html", articles=articles)
 
 
+@app.route('/home_old')
+def home_old():
+    q = request.args.get('q')
+
+    if q:
+        # articles = Pasta.query.filter(Pasta.title.contains(q)).all()
+        articles = Pasta.query.filter(Pasta.title.contains(q) | Pasta.intro.contains(q) | Pasta.text.contains(q)).all()
+    else:
+        articles = Pasta.query.order_by(Pasta.date.asc()).all()
+    return render_template("home.html", articles=articles)
+
+
 @app.route('/posts/<int:id>')
 def pasta_detail(id):
     pasta = Pasta.query.get(id)
