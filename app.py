@@ -71,7 +71,8 @@ def home():
     q = request.args.get('q')
 
     if q:
-        articles = Pasta.query.filter(Pasta.title.contains(q)).all()
+        # articles = Pasta.query.filter(Pasta.title.contains(q)).all()
+        articles = Pasta.query.filter(Pasta.title.contains(q) | Pasta.intro.contains(q) | Pasta.text.contains(q)).all()
     else:
         articles = Pasta.query.order_by(Pasta.date.desc()).all()
     return render_template("home.html", articles=articles)
@@ -152,7 +153,7 @@ def create_pasta():
         tag = request.form['tag']
         author = request.form['author']
 
-        #pasta = Pasta(title=title, intro=intro, text=text, teg=teg)
+        # pasta = Pasta(title=title, intro=intro, text=text, teg=teg)
 
         try:
             db.session.add(Pasta(title, intro, text, tag, author))
