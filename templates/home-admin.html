@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Все пасты
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1>Все пасты</h1>
+    <a class="btn btn-info" href="/admin/home">Сначала новые ⇅</a>
+    <a class="btn btn-info" href="/admin/home_old">Сначала старые ⇅</a>
+    <p></p>
+
+
+
+    {% for articles in articles %}
+    <div class="alert alert-info">
+        <h2>{{ articles.title }}</h2>
+        <p>О чём паста: {{ articles.intro }}</p>
+        Теги:
+        {% for tag in articles.tags %}
+            #{{ tag.text }}
+        {% endfor %}
+        <p>
+        {% for author in articles.authors %}
+            Автор: {{ author.text }}
+        {% endfor %}
+        <p><b>Дата: {{ articles.date.date() }}</b></p>
+        <a href="/admin/posts/{{ articles.id }}" class="btn btn-warning">Детальнее</a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -7,6 +7,9 @@
 {% block body %}
     <div class="container mt-5">
         <h1>Обновление статьи</h1>
+        <div class="alert alert-danger">
+        Помните, что поправки чужих статей не должны портить пасту автора, редактируя чужие статьи, относитесь к автору с уважением.
+        </div>
         <form method="post">
             <input type="text" name="title" class="form-control" id="title" value="{{ pasta.title }}" placeholder="Название пасты"><br>
             <textarea name="intro" id="intro" class="form-control" placeholder="Интро">{{ pasta.intro }}</textarea><br>

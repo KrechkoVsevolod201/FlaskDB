@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Введите пароль администратора
+{% endblock %}
+
+{% block body %}
+<main class="form-signin">
+    <div class="container mt-5">
+        <form method="get">
+            <input type="password" name="password" class="form-control" id="password" placeholder="Введите пароль" value="{{ request.args.get('password', '') }}"><br>
+            <input type="submit" class="btn btn-success" value="Submit">
+        </form>
+    </div>
+</main>
+{% endblock %}
