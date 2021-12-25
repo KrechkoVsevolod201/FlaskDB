@@ -137,7 +137,7 @@ def pasta_delete(id):
     try:
         db.session.delete(pasta)
         db.session.commit()
-        return redirect('/home')
+        return redirect('/admin/home')
 
     except:
         return "При удалении пасты произошла ошибка"
